@@ -6,6 +6,7 @@
    <link rel="stylesheet" href="style.css" />
    <script src="script.js" defer></script>
    <title>Quiz</title>
+   <script src="script.js" defer></script>
  </head>
  <body>
 
@@ -41,6 +42,7 @@
  
    <!-- Tela de resultado final com ranking -->
   <div id="result-screen" class="hidden result-container">
+    <ul id="ranking-list" class="ranking-list"></ul>
     <div class="result-left">
       <h2>Resultado</h2>
       <p id="final-score"></p>
@@ -51,18 +53,5 @@
     </div>    
      
   </div>
-
-  <script> 
-    const params = new URLSearchParams(window.location.search); 
-    const id = params.get('id'); 
-    if (id) { 
-      localStorage.setItem('quizPersonalizadoId', id); 
-      localStorage.setItem('modoPersonalizado', 'true'); 
-      window.location.href = 'index.html'; 
-    } else { 
-      alert("Quiz inválido."); 
-      window.location.href = '../tela_comunidade/comunidade.html'; 
-    } 
-  </script>
    
  </body>

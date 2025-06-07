@@ -103,7 +103,7 @@ app.post('/quiz', async (req, res) => {
 app.get('/quizzes', async (req, res) => {
   const db = connection.promise();
   try {
-    const [rows] = await db.query( 'SELECT p.pergunta_id, p.texto_pergunta FROM perguntas p ');
+    const [rows] = await db.query( 'SELECT quiz_id, nome_quiz, criador FROM quizzes');
     res.json(rows);
   } catch (err) {
     console.error('Erro ao buscar quizzes:', err);
@@ -111,6 +111,29 @@ app.get('/quizzes', async (req, res) => {
   }
 });
 
+app.get('/quiz/:id', async (req, res) => {
+  const db = connection.promise();
+  const quizId = req.params.id;
+  try {
+    const [perguntas] = await db.query('SELECT pergunta_id, texto_pergunta FROM perguntas WHERE quiz_id = ?', [quizId]);
+    const quiz = [];
+    for (const p of perguntas) {
+      const [opcoes] = await db.query('SELECT texto_opcao FROM opcoes_resposta WHERE pergunta_id = ? ORDER BY indice_opcao', [p.pergunta_id]);
+      const [correta] = await db.query('SELECT indice_correto FROM respostas_certas WHERE pergunta_id = ?', [p.pergunta_id]);
+    
+      quiz.push({
+        question: p.texto_pergunta,
+        options: opcoes.map(o => o.texto_opcao),
+        answer: correta[0].indice_correto
+      });
+    }
+    
+    res.json(quiz);
+  } catch (err) {
+    console.error('Erro ao carregar quiz:', err);
+    res.status(500).json({ error: 'Erro ao carregar quiz.' });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);

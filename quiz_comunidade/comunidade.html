@@ -62,7 +62,7 @@
                 <span>DIFICULDADE: Fácil</span>
             </div>
 
-            <div class="tela" onclick="window.location.href='../jogo_quiz/quiz_igor.html'">
+            <div class="tela" onclick="window.location.href='../jogo_quiz/quiz_igor/quiz_igor.html'">
                 <img src="../Imagens/imgQuizIgor.png" alt="Quiz sobre Java">
                 <p>QUIZ SOBRE JAVASCRIPT<br> <span>CRIADOR: Igor</span></p>
                 <span>DIFICULDADE: Moderada</span>
@@ -87,13 +87,12 @@
     
 
     <script src="../JavaScript/conexoes_buttons.js"></script>
-    <script>
-    window.addEventListener('DOMContentLoaded', async () => {
-        const avatarMenu = document.getElementById('avatar-menu');
-        const avatarSalvo = localStorage.getItem('avatarSelecionado');
-        if (avatarMenu && avatarSalvo) {
-            avatarMenu.setAttribute('src', avatarSalvo);
-        }
+    <script> window.addEventListener('DOMContentLoaded', async () => { 
+        const avatarMenu = document.getElementById('avatar-menu'); 
+        const avatarSalvo = localStorage.getItem('avatarSelecionado'); 
+        if (avatarMenu && avatarSalvo) { 
+            avatarMenu.setAttribute('src', avatarSalvo); 
+        } 
         const nome = localStorage.getItem("nomeUsuario"); 
         const nomeSpan = document.getElementById("nome-usuario-menu"); 
         if (nome && nomeSpan) { 
@@ -102,22 +101,20 @@
         const container = document.getElementById('comunidade-dinamica'); 
         try { 
             const res = await fetch('http://localhost:3000/quizzes'); 
-            const quizzes = await res.json(); 
-            quizzes.forEach((quiz) => { 
+            const quizzes = await res.json(); quizzes.forEach((quiz) => { 
                 const div = document.createElement('div'); 
                 div.className = 'tela'; 
-                div.innerHTML = ` <img src="../Imagens/pp.png" alt="Quiz da Comunidade"> 
-                <p>${quiz.texto_pergunta.substring(0, 50)}...<br><span>CRIADOR: Comunidade</span></p> 
-                <span>DIFICULDADE: -</span> `; 
+                div.innerHTML = ` <img src="../Imagens/pp.png" alt="Quiz da Comunidade"> <p>${quiz.nome_quiz}<br><span>CRIADOR: ${quiz.criador}</span></p> <span>DIFICULDADE: -</span> `; 
                 div.addEventListener('click', () => { 
-                    window.location.href = '../jogo_quiz/jogar_quiz.html?id=' + quiz.pergunta_id; }
-                );container.appendChild(div); 
+                    window.location.href = '../jogo_quiz/index.html?quiz_id=' + quiz.quiz_id; 
+                }); 
+                container.appendChild(div); 
             }); 
-        } catch (err) { 
+        } 
+        catch (err) { 
             console.error('Erro ao carregar quizzes da comunidade:', err); 
         } 
-    }
-    );
+    }); 
 </script>
 
     

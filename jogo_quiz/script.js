@@ -1,35 +1,9 @@
-(async function verificarModoPersonalizado() {
-  const isCustom = localStorage.getItem('modoPersonalizado') === 'true';
-  const id = localStorage.getItem('quizPersonalizadoId');
+const urlParams = new URLSearchParams(window.location.search);
+const quizId = urlParams.get('quiz_id');
+const modoPersonalizado = quizId !== null;
+const feedback = document.getElementById("feedback");
 
-  if (isCustom && id) {
-    try {
-      const perguntaRes = await fetch('http://localhost:3000/pergunta/${id}');
-      const pergunta = await perguntaRes.json();
-      const opcoesRes = await fetch(`http://localhost:3000/opcoes/${id}`);
-      const opcoes = await opcoesRes.json();
-      const respostaRes = await fetch(`http://localhost:3000/resposta/${id}`);
-      const resposta = await respostaRes.json();
-
-      questions.custom = [
-      {
-        question: pergunta.texto_pergunta,
-        options: opcoes.map(o => o.texto_opcao),
-        answer: resposta.indice_correto
-      }
-      ];
-
-      localStorage.setItem('selectedLevel', 'custom');
-    } catch (err) {
-      alert("Erro ao carregar quiz da comunidade.");
-      console.error(err);
-      window.location.href = '../tela_comunidade/comunidade.html';
-    }
-  }
-})();
-
-
-const questions = {
+let questions = {
   easy: [
     {
       question: "1. Qual linguagem é usada para estruturar páginas da web?",
@@ -240,6 +214,21 @@ const questions = {
   ]
 };
 
+window.onload = function () {
+  if (modoPersonalizado) {
+    fetch(`http://localhost:3000/quiz/${quizId}`)
+    .then(res => res.json())
+    .then(data => {
+      questions = { custom: data };
+      localStorage.setItem('selectedLevel', 'custom');
+      startQuiz();
+    }).catch(err => {
+      console.error("Erro ao carregar quiz:", err);
+      alert("Quiz inválido.");
+      window.location.href = "../quiz_comunidade/comunidade.html";
+    });
+  }
+};
   
   // Variáveis de controle
   let currentQuestion = 0;
@@ -292,7 +281,8 @@ const questions = {
 
     answered = false;
     const level = localStorage.getItem('selectedLevel');
-    const currentQ = questions[level][currentQuestion];
+    const currentQuestions = questions[level];
+    const currentQ = currentQuestions[currentQuestion];
   
     // Atualiza a pergunta e opções
     document.getElementById("question").textContent = currentQ.question;
@@ -314,7 +304,7 @@ const questions = {
     });
   
     // Atualiza o contador de questão
-    const totalQuestions = questions[level].length;
+    const totalQuestions = currentQuestions.length;
     const counterText = `Questão ${currentQuestion + 1} de ${totalQuestions}`;
     document.getElementById("question-counter").textContent = counterText;
   

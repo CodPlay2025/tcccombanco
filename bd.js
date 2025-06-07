@@ -1,7 +1,7 @@
 const mysql = require('mysql2');
 
 const connection = mysql.createConnection({
-  host: '192.168.15.2',       // ou 127.0.0.1
+  host: '10.67.96.159',       // ou 127.0.0.1
   user: 'aaa',            // seu usuário do MySQL
   password: '123456',            // sua senha (pode estar vazia)
   database: 'bdtcc'        // nome do banco criado previamente
